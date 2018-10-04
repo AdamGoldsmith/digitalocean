@@ -18,14 +18,21 @@
 
     - name: Create, initialise & use swap file, if it doesn't exist already
       block:
-        - command: "dd if=/dev/zero of={{ swapfile }} count={{ swapsize }} bs=1MiB"
+        - name: Create swap file
+          command: "dd if=/dev/zero of={{ swapfile }} count={{ swapsize }} bs=1MiB"
         - name: Update swap file permissions
           file:
             path: "{{ swapfile }}"
             owner: root
             group: root
             mode: 0600
-        - command: "mkswap {{ swapfile }}"
-        - command: "swapon {{ swapfile }}"
+        - name: Make it a swap file
+          command: "mkswap {{ swapfile }}"
+        - name: Enable the swap file
+          command: "swapon {{ swapfile }}"
+        - name: Permanently add swap file to fstab
+          lineinfile:
+            path: /etc/fstab
+            line: "/swapfile   swap    swap    sw  0   0"
       when: swap_result.stat.exists == False
 
