@@ -1,0 +1,47 @@
+---
+
+- name: Install docker and start Jenkins Slave container
+  hosts: do
+  remote_user: root
+  gather_facts: yes
+
+  tasks:
+#    - name: Pull & start Jenkins docker image
+#      docker_container:
+#        name: "jenkins-master"
+#        image: "jenkinsci/blueocean"
+#        cleanup: yes
+#        detach: yes
+#        user: root
+#        published_ports:
+#          - "8080:8080"
+#          - "50000:50000"
+#        volumes:
+#          - "jenkins-data-master:/var/jenkins_home"
+#          - "/var/run/docker.sock:/var/run/docker.sock"
+
+    - name: Pull & start Jenkins JNLP Slave docker image
+      docker_container:
+        name: "jenkins-slave"
+        image: "jenkins/jnlp-slave"
+        cleanup: yes
+        detach: yes
+        user: root
+#        published_ports:
+#          - "8080:8080"
+#          - "50000:50000"
+        volumes:
+          - "jenkins-data-slave:/var/jenkins_home"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+        env:
+          JENKINS_URL: "{{ jenkins_url }}"
+          JENKINS_SECRET: "{{ jenkins_slave_secret }}"
+          JENKINS_AGENT_NAME: "DO-S1"
+          JENKINS_AGENT_WORKDIR: "/var/jenkins_home"
+
+#    - name: Remove all but selected list of containers
+#  docker_network:
+#    name: jenkins
+#    connected:
+#      - jenkins-master
+#      - jenkins-slave

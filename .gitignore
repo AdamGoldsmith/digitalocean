@@ -1,0 +1,5 @@
+!roles/*
+roles/*/
+*.retry
+terraform_files/.terraform
+terraform_files/terraform.tfstate*

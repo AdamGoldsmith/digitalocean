@@ -1,0 +1,31 @@
+---
+
+- name: Create swap file
+  hosts: do
+  remote_user: root
+  gather_facts: no
+
+  vars:
+    swapfile: "/swapfile"
+    swapsize: 4096
+
+  tasks:
+
+    - name: Check swap file exists
+      stat:
+        path: "{{ swapfile }}"
+      register: swap_result
+
+    - name: Create, initialise & use swap file, if it doesn't exist already
+      block:
+        - command: "dd if=/dev/zero of={{ swapfile }} count={{ swapsize }} bs=1MiB"
+        - name: Update swap file permissions
+          file:
+            path: "{{ swapfile }}"
+            owner: root
+            group: root
+            mode: 0600
+        - command: "mkswap {{ swapfile }}"
+        - command: "swapon {{ swapfile }}"
+      when: swap_result.stat.exists == False
+

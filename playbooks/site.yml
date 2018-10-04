@@ -1,0 +1,11 @@
+---
+
+- name: Deploy Jenkins Slave docker container on DigitalOcean droplet
+  hosts: all
+  gather_facts: no
+
+- import_playbook: terraform.yml
+- import_playbook: swap.yml
+- import_playbook: docker.yml
+- import_playbook: jenkins.yml
+

@@ -1,0 +1,16 @@
+---
+
+- name: Install docker
+  hosts: do
+  remote_user: root
+  gather_facts: yes
+
+  vars:
+    pip_install_packages:
+      - name: docker
+
+  roles:
+    - { role: geerlingguy.repo-epel, tags: epel }
+    - { role: geerlingguy.pip, tags: pip }
+    - { role: geerlingguy.docker, tags: docker }
+

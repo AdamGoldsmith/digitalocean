@@ -1,0 +1,4 @@
+do_api_token: "{{ enc_do_api_token }}"
+do_ssh_keys: "{{ enc_do_ssh_keys }}"
+jenkins_url: "{{ enc_jenkins_url }}"
+jenkins_slave_secret: "{{ enc_jenkins_slave_secret }}"
