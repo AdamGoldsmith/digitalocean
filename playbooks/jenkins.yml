@@ -22,8 +22,9 @@
 
     - name: Pull & start Jenkins JNLP Slave docker image
       docker_container:
-        name: "jenkins-slave"
+        name: "{{ item.name }}"
         image: "jenkins/jnlp-slave"
+        state: "{{ state | default('started') }}"
         cleanup: yes
         detach: yes
         user: root
@@ -34,10 +35,12 @@
           - "jenkins-data-slave:/var/jenkins_home"
           - "/var/run/docker.sock:/var/run/docker.sock"
         env:
-          JENKINS_URL: "{{ jenkins_url }}"
-          JENKINS_SECRET: "{{ jenkins_slave_secret }}"
-          JENKINS_AGENT_NAME: "DO-S1"
+          JENKINS_URL: "{{ item.url }}"
+          JENKINS_SECRET: "{{ item.secret }}"
+          JENKINS_AGENT_NAME: "{{ item.slave }}"
           JENKINS_AGENT_WORKDIR: "/var/jenkins_home"
+      with_items:
+        - "{{ jenkins_slaves }}"
 
 #    - name: Remove all but selected list of containers
 #  docker_network:
